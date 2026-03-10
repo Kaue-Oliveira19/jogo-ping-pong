@@ -1,0 +1,2 @@
+# Dependências do projeto Ping Pong
+pygame==2.5.2
