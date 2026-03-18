@@ -1,6 +1,5 @@
 import pygame
 import random
-
 pygame.init()
 
 largura = 600
@@ -8,81 +7,81 @@ altura = 400
 tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption("Ping Pong")
 
-preto = (0, 0, 0)
+cinza_escuro = (40, 40, 40)
+azul_mesa = (30, 80, 160)
+azul_claro = (40, 100, 190)
 branco = (255, 255, 255)
-azul = (0, 0, 255)  
-vermelho = (255, 0, 0) 
+cinza_claro = (200, 200, 200)
+azul_raquete = (0, 0, 200)
+vermelho_raquete = (200, 0, 0)
+marrom = (120, 70, 30)
+laranja = (220, 100, 30)
 
-jogador1_y = 150  
+jogador1_y = 150
 jogador2_y = 150
-tam_raquete_x = 10
-tam_raquete_y = 100
+tam_raquete_x = 12
+tam_raquete_y = 80
 vel_raquete = 7
 
 bola_x = largura // 2
 bola_y = altura // 2
-bola_vel_x = random.choice([-5, -4, 4, 5]) 
+bola_vel_x = random.choice([-5, -4, 4, 5])
 bola_vel_y = random.choice([-5, -4, 4, 5])
-tamanho_bola = 8  
+tamanho_bola = 7
 
 pontos1 = 0
 pontos2 = 0
-fonte = pygame.font.Font(None, 30)  
-
+fonte = pygame.font.Font(None, 36)
+fonte_pequena = pygame.font.Font(None, 22)
 clock = pygame.time.Clock()
-
 rodando = True
 
 while rodando:
-    
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             rodando = False
-    
+
     teclas = pygame.key.get_pressed()
-    
+
     if teclas[pygame.K_w]:
         jogador1_y = jogador1_y - vel_raquete
     if teclas[pygame.K_s]:
         jogador1_y = jogador1_y + vel_raquete
-    
+
     if teclas[pygame.K_UP]:
         jogador2_y = jogador2_y - vel_raquete
     if teclas[pygame.K_DOWN]:
         jogador2_y = jogador2_y + vel_raquete
-    
-    if jogador1_y < 0:
-        jogador1_y = 0
-    if jogador1_y > altura - tam_raquete_y:
-        jogador1_y = altura - tam_raquete_y
-    
-    if jogador2_y < 0:
-        jogador2_y = 0
-    if jogador2_y > altura - tam_raquete_y:
-        jogador2_y = altura - tam_raquete_y
-    
+
+    if jogador1_y < 30:
+        jogador1_y = 30
+    if jogador1_y > altura - tam_raquete_y - 30:
+        jogador1_y = altura - tam_raquete_y - 30
+
+    if jogador2_y < 30:
+        jogador2_y = 30
+    if jogador2_y > altura - tam_raquete_y - 30:
+        jogador2_y = altura - tam_raquete_y - 30
+
     bola_x = bola_x + bola_vel_x
     bola_y = bola_y + bola_vel_y
-    
-    if bola_y <= 0 or bola_y >= altura - tamanho_bola:
-        bola_vel_y = bola_vel_y * -1  
-    
-    if bola_x <= tam_raquete_x:
+
+    if bola_y <= 30 or bola_y >= altura - 30 - tamanho_bola:
+        bola_vel_y = bola_vel_y * -1
+
+    if bola_x <= 55 + tam_raquete_x:
         if bola_y + tamanho_bola >= jogador1_y and bola_y <= jogador1_y + tam_raquete_y:
             bola_vel_x = bola_vel_x * -1
-            bola_x = tam_raquete_x + 1  
-            if random.randint(1, 10) > 7:
-                bola_vel_x = bola_vel_x * 1.2
-                bola_vel_y = bola_vel_y * 1.2
-    
-    if bola_x + tamanho_bola >= largura - tam_raquete_x:
+            bola_x = 55 + tam_raquete_x + 1
+            if random.randint(0, 3) == 0:
+                bola_vel_y = bola_vel_y + random.choice([-1, 1])
+
+    if bola_x + tamanho_bola >= largura - 55 - tam_raquete_x:
         if bola_y + tamanho_bola >= jogador2_y and bola_y <= jogador2_y + tam_raquete_y:
             bola_vel_x = bola_vel_x * -1
-            bola_x = largura - tam_raquete_x - tamanho_bola - 1
-            if random.randint(1, 10) > 7:
-                bola_vel_x = bola_vel_x * 1.2
-                bola_vel_y = bola_vel_y * 1.2
-    
+            bola_x = largura - 55 - tam_raquete_x - tamanho_bola - 1
+
     if bola_x < 0:
         pontos2 = pontos2 + 1
         bola_x = largura // 2
@@ -90,7 +89,7 @@ while rodando:
         bola_vel_x = random.choice([-4, 4])
         bola_vel_y = random.choice([-4, 4])
         print(f"Ponto pro vermelho! {pontos1} x {pontos2}")
-    
+
     if bola_x > largura:
         pontos1 = pontos1 + 1
         bola_x = largura // 2
@@ -98,22 +97,57 @@ while rodando:
         bola_vel_x = random.choice([-4, 4])
         bola_vel_y = random.choice([-4, 4])
         print(f"Ponto pro azul! {pontos1} x {pontos2}")
-    
-    tela.fill(preto)  
-    
-    pygame.draw.rect(tela, azul, (0, jogador1_y, tam_raquete_x, tam_raquete_y))
 
-    pygame.draw.rect(tela, vermelho, (largura - tam_raquete_x, jogador2_y, tam_raquete_x, tam_raquete_y))
-    
-    pygame.draw.circle(tela, branco, (int(bola_x), int(bola_y)), tamanho_bola)
-    
-    texto1 = fonte.render(str(pontos1), True, azul)
-    texto2 = fonte.render(str(pontos2), True, vermelho)
-    tela.blit(texto1, (150, 20))
-    tela.blit(texto2, (450, 20))
-    
+    tela.fill(cinza_escuro)
+
+    faixa = 0
+    while faixa < 6:
+        if faixa % 2 == 0:
+            pygame.draw.rect(tela, azul_claro, (faixa * 100, 30, 100, altura - 60))
+        else:
+            pygame.draw.rect(tela, azul_mesa, (faixa * 100, 30, 100, altura - 60))
+        faixa = faixa + 1
+
+    pygame.draw.rect(tela, branco, (0, 30, largura, altura - 60), 3)
+
+    pygame.draw.line(tela, branco, (largura // 2, 30), (largura // 2, altura - 30), 2)
+
+    rede_y = 30
+    while rede_y < altura - 30:
+        if (rede_y // 10) % 2 == 0:
+            pygame.draw.rect(tela, branco, (largura // 2 - 4, rede_y, 8, 10))
+        else:
+            pygame.draw.rect(tela, cinza_claro, (largura // 2 - 4, rede_y, 8, 10))
+        rede_y = rede_y + 10
+
+    pygame.draw.rect(tela, cinza_claro, (largura // 2 - 2, 25, 4, altura - 50))
+
+    pygame.draw.rect(tela, marrom, (40, jogador1_y + tam_raquete_y // 2 - 5, 18, 10))
+
+    pygame.draw.rect(tela, azul_raquete, (55, jogador1_y, tam_raquete_x, tam_raquete_y))
+
+    pygame.draw.rect(tela, branco, (55, jogador1_y, tam_raquete_x, tam_raquete_y), 1)
+
+    pygame.draw.rect(tela, marrom, (largura - 58, jogador2_y + tam_raquete_y // 2 - 5, 18, 10))
+
+    pygame.draw.rect(tela, vermelho_raquete, (largura - 55 - tam_raquete_x, jogador2_y, tam_raquete_x, tam_raquete_y))
+
+    pygame.draw.rect(tela, branco, (largura - 55 - tam_raquete_x, jogador2_y, tam_raquete_x, tam_raquete_y), 1)
+
+    pygame.draw.circle(tela, laranja, (int(bola_x), int(bola_y)), tamanho_bola)
+    pygame.draw.circle(tela, branco, (int(bola_x) - 2, int(bola_y) - 2), 2)
+
+    texto1 = fonte.render(str(pontos1), True, branco)
+    texto2 = fonte.render(str(pontos2), True, branco)
+    tela.blit(texto1, (150, 5))
+    tela.blit(texto2, (440, 5))
+
+    nome1 = fonte_pequena.render("J1", True, azul_raquete)
+    nome2 = fonte_pequena.render("J2", True, vermelho_raquete)
+    tela.blit(nome1, (120, 8))
+    tela.blit(nome2, (470, 8))
+
     pygame.display.flip()
-    
     clock.tick(60)
 
 pygame.quit()
